@@ -16,7 +16,7 @@ export function generateColdShades(){
             let bol = colors[i].match(Regex)
             if(bol !== null){
                 let div = document.createElement('div')
-                // document.head.classList.add(colors[i])
+                 document.head.classList.add(colors[i])
                 div.className = colors[i]
                 div.textContent = colors[i]
                 document.body.append(div)
