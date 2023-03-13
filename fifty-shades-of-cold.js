@@ -1,4 +1,4 @@
-import { colors } from "./fifty-shades-of-cold.data.js";
+import { colors } from "./fifty-shades-of-cold.js";
 
 function generateClasses() {
     const head = document.getElementsByTagName("head")[0];
