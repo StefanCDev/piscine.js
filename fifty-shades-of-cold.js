@@ -1,38 +1,33 @@
-import {colors} from './fifty-shades-of-cold.data.js';
-export function generateClasses(){
-    let style = document.createElement('style')
-    style.innerHTML =  ''
-    for(let i = 0; i < colors.length;i++){
-        style.innerHTML +=  '.' + colors[i] + '{background:' + colors[i] + ';}'
-    }
-    document.getElementsByTagName('head')[0].appendChild(style);
+import { colors } from "./fifty-shades-of-cold.data.js";
 
+function generateClasses() {
+    const head = document.getElementsByTagName("head")[0];
+    const style = document.createElement("style");
+    colors.forEach((color) => {
+        style.innerHTML += `.${color} {\n  background: ${color};\n }\n\n`;
+    });
+    console.log(style.innerHTML);
+    head.appendChild(style);
 }
-export function generateColdShades(){
-    let view = ['aqua', 'blue', 'turquoise', 'green', 'cyan', 'navy', 'purple']
-    for(let i = 0;i<colors.length;i++){
-        for(let j = 0;j<view.length;j++){
-            let Regex = new RegExp(view[j])
-            let bol = colors[i].match(Regex)
-            if(bol !== null){
-                let div = document.createElement('div')
-                 document.head.classList.add(colors[i])
-                div.className = colors[i]
-                div.textContent = colors[i]
-                document.body.append(div)
-            }
+
+function generateColdShades() {
+    const body = document.getElementsByTagName("body")[0];
+    colors.forEach((color) => {
+        if (
+            color.match(/(aqua|blue|turquoise|green|cyan|navy|purple)/) !== null
+        ) {
+            const div = document.createElement("div");
+            div.classList.add(color);
+            div.innerHTML = color;
+            body.appendChild(div);
         }
-    }
+    });
 }
-export function choseShade(d){
-    let elem = document.querySelectorAll('div')
-    for(let i = 0;i<colors.length;i++){
-        let style = elem[i].className
-        let flag = elem[i].classList.contains(d)
-        if(!flag){
-            elem[i].classList.remove(style)
-            elem[i].classList.add(d)
-        } 
-    }
-    
+
+function choseShade(shade) {
+    document.querySelectorAll("div").forEach((div) => {
+        div.className = shade;
+    });
 }
+
+export { generateClasses, generateColdShades, choseShade };
