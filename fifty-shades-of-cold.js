@@ -1,13 +1,14 @@
 import { colors } from "./fifty-shades-of-cold.data.js";
 
-function generateClasses() {
-    const head = document.getElementsByTagName("head")[0];
-    const style = document.createElement("style");
-    colors.forEach((color) => {
-        style.innerHTML += `.${color} {\n  background: ${color};\n }\n\n`;
-    });
-    console.log(style.innerHTML);
-    head.appendChild(style);
+export const generateClasses = () => {
+    let style = document.createElement('style');
+    let text = "";
+    for(let i = 0; i<colors.length; i++){
+        let color = colors[i];
+        text+='.'+color+' {background: '+ color + '; }\n ';       
+    }   
+    style.append(text);
+    document.head.appendChild(style);
 }
 
 function generateColdShades() {
