@@ -16,6 +16,7 @@ function reverseVeryDisco(str) {
             .join(' ');
 }
 
+
 fs.readFile(args[0], 'utf8', (err, data) => {
   if (err) throw err;
   const result = reverseVeryDisco(data.trim());
