@@ -1,17 +1,20 @@
-import { readFile } from 'fs/promises';
+import { readFileSync } from 'fs';
 
-async function reverseVeryDisco(filePath) {
-  const content = await readFile(filePath, 'utf8');
-  const words = content.split(' ');
-  const reversedWords = words.map((word) => {
-    const halfLength = Math.ceil(word.length / 2);
-    const firstHalf = word.slice(0, halfLength);
-    const secondHalf = word.slice(halfLength);
-    return `${secondHalf}${firstHalf}`;
-  });
-  const reversedContent = reversedWords.join(' ');
-  console.log(reversedContent);
-}
+// Get the file name from the command-line arguments
+const fileName = process.argv[2];
 
-const filePath = process.argv[2];
-reverseVeryDisco(filePath);
+// Read the content of the file
+const content = readFileSync(fileName, 'utf-8');
+
+// Reverse the content from the very disco mode
+const discoChars = 'DSECORYIUAPFGHLJKLMNBQTVWXZ';
+const plainChars = 'DISCOVERYABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const reverseMap = new Map([...discoChars].map((c, i) => [c, plainChars[i]]));
+const reversedContent = content
+  .split('')
+  .map(c => reverseMap.has(c) ? reverseMap.get(c) : c)
+  .reverse()
+  .join('');
+
+// Print the reversed content to the console
+console.log(reversedContent);
