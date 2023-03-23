@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
+import fs from 'fs';
 
 const args = process.argv.slice(2);
 
@@ -19,5 +19,5 @@ const result = veryDisco(args[0]);
 
 fs.writeFile('verydisco-forever.txt', result, (err) => {
   if (err) throw err;
-  console.log('Result written to verydisco-forever.txt');
+  console.log('verydisco-forever.txt');
 });
