@@ -1,4 +1,5 @@
-import fs from  'fs';
+const fs = require('fs');
+const { join } = require('path');
 
 // Read the list of guests from a file or database.
 const guests = [
@@ -14,11 +15,17 @@ const vipGuests = guests.filter(guest => guest.response === 'YES');
 // Sort the filtered list in ascending order of the guests' last name.
 vipGuests.sort((a, b) => a.lastname.localeCompare(b.lastname));
 
-// Write the sorted list to a file named vip.txt.
-const fileStream = fs.createWriteStream('vip.txt');
-vipGuests.forEach((guest, index) => {
-  // Format each line of the file as "Number. Lastname Firstname".
-  const line = `${index + 1}. ${guest.lastname} ${guest.firstname}\n`;
-  fileStream.write(line);
-});
-fileStream.end();
+// Write the sorted list to a file named vip.txt in the given directory path.
+async function writeVipGuestsToFile(directoryPath) {
+  const fileName = 'vip.txt';
+  const filePath = join(directoryPath, fileName);
+  const fileStream = fs.createWriteStream(filePath);
+  vipGuests.forEach((guest, index) => {
+    // Format each line of the file as "Number. Lastname Firstname".
+    const line = `${index + 1}. ${guest.lastname} ${guest.firstname}\n`;
+    fileStream.write(line);
+  });
+  fileStream.end();
+}
+
+module.exports = { writeVipGuestsToFile };
