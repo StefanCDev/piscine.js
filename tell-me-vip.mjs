@@ -1,31 +1,34 @@
-const fs = require('fs');
-const { join } = require('path');
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
-// Read the list of guests from a file or database.
-const guests = [
-  { firstname: 'Alice', lastname: 'Smith', response: 'YES' },
-  { firstname: 'Bob', lastname: 'Johnson', response: 'NO' },
-  { firstname: 'Charlie', lastname: 'Brown', response: 'YES' },
-  { firstname: 'David', lastname: 'Davis', response: 'MAYBE' },
-];
+// Define the path to the invitation response JSON file
+const invitationResponsePath = join(__dirname, 'invitationResponse.json');
 
-// Filter the guests who answered 'YES' to the invitation.
-const vipGuests = guests.filter(guest => guest.response === 'YES');
+// Define the path to the output file for VIP guests
+const vipListPath = join(__dirname, 'vip.txt');
 
-// Sort the filtered list in ascending order of the guests' last name.
-vipGuests.sort((a, b) => a.lastname.localeCompare(b.lastname));
+// Read the invitation response file
+readFile(invitationResponsePath, 'utf8')
+  .then((data) => {
+    // Parse the JSON data from the invitation response
+    const invitationResponse = JSON.parse(data);
 
-// Write the sorted list to a file named vip.txt in the given directory path.
-async function writeVipGuestsToFile(directoryPath) {
-  const fileName = 'vip.txt';
-  const filePath = join(directoryPath, fileName);
-  const fileStream = fs.createWriteStream(filePath);
-  vipGuests.forEach((guest, index) => {
-    // Format each line of the file as "Number. Lastname Firstname".
-    const line = `${index + 1}. ${guest.lastname} ${guest.firstname}\n`;
-    fileStream.write(line);
+    // Filter guests who responded 'YES' to the invitation
+    const vipGuests = invitationResponse.guests.filter((guest) => guest.response === 'YES');
+
+    // Sort the VIP guests in ascending alphabetic order by last name
+    vipGuests.sort((a, b) => a.lastname.localeCompare(b.lastname));
+
+    // Generate the formatted list of VIP guests
+    const vipList = vipGuests.map((guest, index) => `${index + 1}. ${guest.lastname} ${guest.firstname}`).join('\n');
+
+    // Write the VIP list to the output file
+    return writeFile(vipListPath, vipList, 'utf8');
+  })
+  .then(() => {
+    console.log('VIP list saved to vip.txt');
+  })
+  .catch((error) => {
+    console.error(error);
   });
-  fileStream.end();
-}
 
-module.exports = { writeVipGuestsToFile };
