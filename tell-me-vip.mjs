@@ -1,5 +1,9 @@
-import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { readFile, writeFile } from 'fs/promises';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+// Get the path to the directory containing the module
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Define the path to the invitation response JSON file
 const invitationResponsePath = join(__dirname, 'invitationResponse.json');
@@ -31,4 +35,3 @@ readFile(invitationResponsePath, 'utf8')
   .catch((error) => {
     console.error(error);
   });
-
