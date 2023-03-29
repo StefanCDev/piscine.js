@@ -1,37 +1,30 @@
-import { readFile, writeFile } from 'fs/promises';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-// Get the path to the directory containing the module
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// Define the path to the invitation response JSON file
-const invitationResponsePath = join(__dirname, 'invitationResponse.json');
-
-// Define the path to the output file for VIP guests
-const vipListPath = join(__dirname, 'vip.txt');
-
-// Read the invitation response file
-readFile(invitationResponsePath, 'utf8')
-  .then((data) => {
-    // Parse the JSON data from the invitation response
-    const invitationResponse = JSON.parse(data);
-
-    // Filter guests who responded 'YES' to the invitation
-    const vipGuests = invitationResponse.guests.filter((guest) => guest.response === 'YES');
-
-    // Sort the VIP guests in ascending alphabetic order by last name
-    vipGuests.sort((a, b) => a.lastname.localeCompare(b.lastname));
-
-    // Generate the formatted list of VIP guests
-    const vipList = vipGuests.map((guest, index) => `${index + 1}. ${guest.lastname} ${guest.firstname}`).join('\n');
-
-    // Write the VIP list to the output file
-    return writeFile(vipListPath, vipList, 'utf8');
-  })
-  .then(() => {
-    console.log('VIP list saved to vip.txt');
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+import * as fs from "fs/promises"
+const dir = process.argv[2]
+const guests = await fs.readdir(dir)
+const getContent = async (filename) => {
+    return await fs.readFile(filename, "utf8")
+}
+const awaitfilterData = await Promise.all(
+    guests.map(async (v) => {
+        let path = `${dir}/${v}`
+        let response = await getContent(path)
+        let { answer } = JSON.parse(response)
+        if (answer === "yes") {
+            return v
+        }
+    })
+)
+const filterData = awaitfilterData.filter((v) => v !== undefined)
+const cleanData = filterData.map((v, i) => {
+    let split = v.replace("_", " ").replace(".json", "").split(" ")
+    v = split[1] + " " + split[0]
+    return v
+})
+const sortData = cleanData.sort((a, b) => a.localeCompare(b))
+const result = sortData.map((v, i) => {
+    v = `${i + 1}. ${v}`
+    return v
+})
+fs.writeFile("vip.txt", result.join("\n"), (err) => {
+    if (err) throw err
+})
